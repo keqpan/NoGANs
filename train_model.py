@@ -13,7 +13,7 @@ from datasets import dataset_factory, dataset_utils
 
 flags = tf.app.flags
 flags.DEFINE_integer('batch_size', 16, 'Batch size.')
-flags.DEFINE_integer('num_epochs', 5, 'Num of epochs to train.')
+flags.DEFINE_integer('num_epochs', 50, 'Num of epochs to train.')
 flags.DEFINE_integer('val_every_n_epoch', 5, 'Validation every n epochs.')
 flags.DEFINE_float("lr", 0.0001, "Learning rate [0.0001].")
 flags.DEFINE_string('log_dir', './train_log/',
@@ -55,7 +55,7 @@ train_dataset = slim.dataset.Dataset(
       items_to_descriptions='fake descr')
 
 batch_size = FLAGS.batch_size 
-n_epochs = FLAGS.num_epochs
+# n_epochs = FLAGS.num_epochs
 epoch_size = int(train_dataset_size/batch_size)
 learning_rate = FLAGS.lr
 validation_every_n_step = FLAGS.val_every_n_epoch * epoch_size
@@ -84,8 +84,7 @@ proto1 = ((proto1/255)-0.5)*2
 
 from model import vgg_19_encoder, vgg_19_decoder
 
-def main(args):
-    autoencoder = True
+def train(autoencoder, n_epochs):
     img_width = 224
     img_height = 224
     noise_dim = 1
@@ -179,6 +178,10 @@ def main(args):
             global_step = global_step
         )
 
+
+def main(args):
+    train(autoencoder=True, n_epochs=10)
+    train(autoencoder=False, n_epochs=FLAGS.num_epochs)
 
 
 if __name__ == '__main__':
